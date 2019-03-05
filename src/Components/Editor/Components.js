@@ -9,21 +9,28 @@ export const FlexWrapper = styled.div`
 export const MainWrapper = styled.div`
     background: ${ColorStack.grayBackground};
     min-height: 790px;
-
-    h5 {
-        margin-top: 5px;
-        color: ${ColorStack.darkText};
-    }
 `;
 
+export const Title = styled.h5`
+    margin-top: 5px;
+    margin-left: 10px;
+    color: ${ColorStack.darkText};
+`;
 export const MenuWrapper = styled.div`
     padding: 20px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+
+    div {
+        display: flex;
+    }
+    .action {
+        background: ${ColorStack.red};
+    }
 `;
 
 export const MenuButton = styled.button`
-    margin: 5px;
+    margin: 2px;
     padding: 10px;
     border-radius: 2px;    
     text-decoration: none;

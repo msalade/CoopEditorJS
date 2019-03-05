@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import AceEditor from 'react-ace';
 import brace from 'brace';
-import { FlexWrapper, MainWrapper, MenuWrapper, EditorWrapper, ResultWrapper, MenuButton } from './Components';
+import { FlexWrapper, MainWrapper, MenuWrapper, EditorWrapper, ResultWrapper, MenuButton, Title } from './Components';
 
 import 'brace/mode/javascript';
 import 'brace/mode/css';
@@ -53,14 +53,16 @@ class Editor extends Component {
 
         return <MainWrapper>
             <MenuWrapper>
-                <MenuButton onClick={this.runCode}>Run!</MenuButton>
-                <MenuButton active={!showJsEditor} onClick={() => this.onShowElementClick()}>JavaScript</MenuButton>
-                <MenuButton active={!showCssEditor} onClick={() => this.onShowElementClick("showCssEditor")}>Css</MenuButton>
-                <MenuButton active={!showHtmlEditor} onClick={() => this.onShowElementClick("showHtmlEditor")}>Html</MenuButton>
+                <MenuButton className="action" onClick={this.runCode}>Run!</MenuButton>
+                <div>
+                    <MenuButton active={!showJsEditor} onClick={() => this.onShowElementClick()}>JavaScript</MenuButton>
+                    <MenuButton active={!showCssEditor} onClick={() => this.onShowElementClick("showCssEditor")}>Css</MenuButton>
+                    <MenuButton active={!showHtmlEditor} onClick={() => this.onShowElementClick("showHtmlEditor")}>Html</MenuButton>
+                </div>
             </MenuWrapper>
             <FlexWrapper>
                 {showJsEditor && <div>
-                    <h5>JavaScript</h5>
+                    <Title>JavaScript</Title>
                     <EditorWrapper>
                         <AceEditor
                             mode="javascript"
@@ -83,7 +85,7 @@ class Editor extends Component {
                     </EditorWrapper>
                 </div>}
                 {showCssEditor && <div>
-                    <h5>Css</h5>
+                    <Title>Css</Title>
                     <EditorWrapper>
                         <AceEditor
                             mode="css"
@@ -106,7 +108,7 @@ class Editor extends Component {
                     </EditorWrapper>
                 </div>}
                 {showHtmlEditor && <div>
-                    <h5>Html</h5>
+                    <Title>Html</Title>
                     <EditorWrapper>
                         <AceEditor
                             mode="html"
@@ -130,7 +132,7 @@ class Editor extends Component {
                 </div>}
             </FlexWrapper>
             <ResultWrapper>
-                <h5>Result</h5>
+                <Title>Result</Title>
                 <EditorWrapper className="frame">
                     <div contentEditable='false' dangerouslySetInnerHTML={{ __html: resultCode }}></div>
                 </EditorWrapper>
