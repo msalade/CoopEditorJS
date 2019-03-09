@@ -14,14 +14,33 @@ import 'brace/ext/language_tools';
 import 'brace/theme/monokai';
 
 class Editor extends Component {
+    socket = null;
     state = {
         showJsEditor: true,
         showCssEditor: true,
         showHtmlEditor: true,
-        jsCode: '',
-        cssCode: '',
-        htmlCode: '',
+        code: {
+            jsCode: '',
+            cssCode: '',
+            htmlCode: ''
+        },
         resultCode: ''
+    }
+
+    componentDidMount() {
+        this.socket = new WebSocket('ws://localhost:5000/editor');
+        this.socket.onmessage = ({ data }) => {
+            console.log(data)
+            const message = JSON.parse(data);
+
+            this.setState({
+                code: {
+                    cssCode: message.cssCode,
+                    htmlCode: message.htmlCode,
+                    jsCode: message.jsCode
+                }
+            });
+        }
     }
 
     onShowElementClick = (elementName = 'showJsEditor') => {
@@ -31,25 +50,33 @@ class Editor extends Component {
     }
 
     onEditorChange = (value, name) => {
-        this.setState({
-            [name]: value
-        });
+        this.setState(currentState => ({
+            code: {...currentState.code, [name]: value}
+        }), () =>{
+            console.log({
+                ...this.state.code, [name]: value, Type: 0
+            })
+            this.socket.send(
+            JSON.stringify({
+                ...this.state.code, [name]: value, Type: 0
+            })
+        )});
     }
 
     runCode = () => {
-        const { jsCode, cssCode, htmlCode } = this.state;
+        const { code } = this.state;
         const dangerousHtml = `<div>
-            <style>${cssCode}</style>
-            <div>${htmlCode}</div>
+            <style>${code.cssCode}</style>
+            <div>${code.htmlCode}</div>
         </div>`;
 
         this.setState({
             resultCode: dangerousHtml
-        }, () => new Function(jsCode)());
+        }, () => new Function(code.jsCode)());
     }
 
     render() {
-        const { jsCode, cssCode, htmlCode, resultCode, showJsEditor, showCssEditor, showHtmlEditor } = this.state;
+        const { code, resultCode, showJsEditor, showCssEditor, showHtmlEditor } = this.state;
 
         return <MainWrapper>
             <MenuWrapper>
@@ -70,10 +97,11 @@ class Editor extends Component {
                             Name="jsCode"
                             onChange={(value) => this.onEditorChange(value, "jsCode")}
                             fontSize={14}
+                            width="400px"
                             showPrintMargin={true}
                             showGutter={true}
                             highlightActiveLine={true}
-                            value={jsCode}
+                            value={code.jsCode}
                             setOptions={{
                                 enableBasicAutocompletion: true,
                                 enableLiveAutocompletion: true,
@@ -93,10 +121,11 @@ class Editor extends Component {
                             name="cssCode"
                             onChange={(value) => this.onEditorChange(value, "cssCode")}
                             fontSize={14}
+                            width="400px"
                             showPrintMargin={true}
                             showGutter={true}
                             highlightActiveLine={true}
-                            value={cssCode}
+                            value={code.cssCode}
                             setOptions={{
                                 enableBasicAutocompletion: true,
                                 enableLiveAutocompletion: true,
@@ -116,10 +145,11 @@ class Editor extends Component {
                             name="htmlCode"
                             onChange={(value) => this.onEditorChange(value, "htmlCode")}
                             fontSize={14}
+                            width="400px"
                             showPrintMargin={true}
                             showGutter={true}
                             highlightActiveLine={true}
-                            value={htmlCode}
+                            value={code.htmlCode}
                             setOptions={{
                                 enableBasicAutocompletion: true,
                                 enableLiveAutocompletion: true,

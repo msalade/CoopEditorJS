@@ -41,10 +41,10 @@ export const MenuButton = styled.button`
 `;
 
 export const EditorWrapper = styled.div`
-   border: solid ${ColorStack.black};
-   border-width: 1px;
-   margin-left: 10px;
-   margin-right: 10px;
+    border: solid ${ColorStack.black};
+    border-width: 1px;
+    margin-left: 10px;
+    margin-right: 10px;
 `;
 
 export const ResultWrapper = styled.div`
