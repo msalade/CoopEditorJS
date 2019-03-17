@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import AceEditor from 'react-ace';
 import brace from 'brace';
 import { FlexWrapper, MainWrapper, MenuWrapper, EditorWrapper, ResultWrapper, MenuButton, Title } from './Components';
+import * as editorActions from '../../Actions/editorActions';
 
 import 'brace/mode/javascript';
 import 'brace/mode/css';
@@ -20,9 +22,9 @@ class Editor extends Component {
         showCssEditor: true,
         showHtmlEditor: true,
         code: {
-            jsCode: '',
-            cssCode: '',
-            htmlCode: ''
+            JsCode: '',
+            CssCode: '',
+            HtmlCode: ''
         },
         resultCode: ''
     }
@@ -30,16 +32,19 @@ class Editor extends Component {
     componentDidMount() {
         this.socket = new WebSocket('ws://localhost:5000/editor');
         this.socket.onmessage = ({ data }) => {
-            console.log(data)
-            const message = JSON.parse(data);
+            console.log(data);
 
-            this.setState({
-                code: {
-                    cssCode: message.cssCode,
-                    htmlCode: message.htmlCode,
-                    jsCode: message.jsCode
-                }
-            });
+            if (data !== 'null') {
+                const message = JSON.parse(data);
+                console.log(message)
+                this.setState({
+                    code: {
+                        CssCode: message.CssCode,
+                        HtmlCode: message.HtmlCode,
+                        JsCode: message.JsCode
+                    }
+                }, () => console.log(this.state.code));
+            }
         }
     }
 
@@ -51,33 +56,34 @@ class Editor extends Component {
 
     onEditorChange = (value, name) => {
         this.setState(currentState => ({
-            code: {...currentState.code, [name]: value}
-        }), () =>{
+            code: { ...currentState.code, [name]: value }
+        }), () => {
             console.log({
                 ...this.state.code, [name]: value, Type: 0
             })
             this.socket.send(
-            JSON.stringify({
-                ...this.state.code, [name]: value, Type: 0
-            })
-        )});
+                JSON.stringify({
+                    ...this.state.code, [name]: value, Type: 0
+                })
+            )
+        });
     }
 
     runCode = () => {
         const { code } = this.state;
         const dangerousHtml = `<div>
-            <style>${code.cssCode}</style>
-            <div>${code.htmlCode}</div>
+            <style>${code.CssCode}</style>
+            <div>${code.HtmlCode}</div>
         </div>`;
 
         this.setState({
             resultCode: dangerousHtml
-        }, () => new Function(code.jsCode)());
+        }, () => new Function(code.JsCode)());
     }
 
     render() {
         const { code, resultCode, showJsEditor, showCssEditor, showHtmlEditor } = this.state;
-
+        console.log(this.props.example);
         return <MainWrapper>
             <MenuWrapper>
                 <MenuButton className="action" onClick={this.runCode}>Run!</MenuButton>
@@ -94,14 +100,14 @@ class Editor extends Component {
                         <AceEditor
                             mode="javascript"
                             theme="monokai"
-                            Name="jsCode"
-                            onChange={(value) => this.onEditorChange(value, "jsCode")}
+                            Name="JsCode"
+                            onChange={(value) => this.onEditorChange(value, "JsCode")}
                             fontSize={14}
                             width="400px"
                             showPrintMargin={true}
                             showGutter={true}
                             highlightActiveLine={true}
-                            value={code.jsCode}
+                            value={code.JsCode}
                             setOptions={{
                                 enableBasicAutocompletion: true,
                                 enableLiveAutocompletion: true,
@@ -118,14 +124,14 @@ class Editor extends Component {
                         <AceEditor
                             mode="css"
                             theme="monokai"
-                            name="cssCode"
-                            onChange={(value) => this.onEditorChange(value, "cssCode")}
+                            name="CssCode"
+                            onChange={(value) => this.onEditorChange(value, "CssCode")}
                             fontSize={14}
                             width="400px"
                             showPrintMargin={true}
                             showGutter={true}
                             highlightActiveLine={true}
-                            value={code.cssCode}
+                            value={code.CssCode}
                             setOptions={{
                                 enableBasicAutocompletion: true,
                                 enableLiveAutocompletion: true,
@@ -142,14 +148,14 @@ class Editor extends Component {
                         <AceEditor
                             mode="html"
                             theme="monokai"
-                            name="htmlCode"
-                            onChange={(value) => this.onEditorChange(value, "htmlCode")}
+                            name="HtmlCode"
+                            onChange={(value) => this.onEditorChange(value, "HtmlCode")}
                             fontSize={14}
                             width="400px"
                             showPrintMargin={true}
                             showGutter={true}
                             highlightActiveLine={true}
-                            value={code.htmlCode}
+                            value={code.HtmlCode}
                             setOptions={{
                                 enableBasicAutocompletion: true,
                                 enableLiveAutocompletion: true,
@@ -171,4 +177,11 @@ class Editor extends Component {
     }
 }
 
-export default Editor;
+export default connect(
+    state => ({
+        ...state.editor
+    }), {
+        ...editorActions
+    }
+)
+(Editor);
