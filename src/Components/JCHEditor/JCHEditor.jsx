@@ -14,7 +14,7 @@ import 'brace/snippets/css';
 import 'brace/ext/language_tools';
 import 'brace/theme/monokai';
 
-class Editor extends Component {
+class JCHEditor extends Component {
     socket = null;
     state = {
         showJsEditor: true,
@@ -175,4 +175,4 @@ export default connect(
         ...editorActions
     }
 )
-(Editor);
+(JCHEditor);
