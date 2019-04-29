@@ -11,6 +11,7 @@ const editorReducer = (state = defaultState(), action) => {
                 ...state,
                 example: action.example
             }
+            
         default:
             return state;
     }

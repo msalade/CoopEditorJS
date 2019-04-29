@@ -5,6 +5,8 @@ import AceEditor from 'react-ace';
 import { FlexWrapper, MainWrapper, MenuWrapper, EditorWrapper, ResultWrapper, MenuButton, Title } from './Components';
 import * as editorActions from '../../Actions/editorActions';
 
+import * as Messages from '../../Tools/messages';
+
 import 'brace/mode/javascript';
 import 'brace/mode/css';
 import 'brace/mode/html';
@@ -56,11 +58,12 @@ class Editor extends Component {
         this.setState(currentState => ({
             code: { ...currentState.code, [name]: value }
         }), () => {
-            this.socket.send(
-                JSON.stringify({
-                    ...this.state.code, [name]: value, Type: 0
-                })
-            )
+            // this.socket.send(
+            //     JSON.stringify({
+            //         ...this.state.code, [name]: value, Type: 0
+            //     })
+            // )
+            this.socket.send(JSON.stringify(Messages.ChatMessage('msg')))
         });
     }
 
