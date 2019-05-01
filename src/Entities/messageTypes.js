@@ -5,4 +5,3 @@ export const MessageType = {
 	Error: 'Error',
 	JHS: 'JHS'
 };
-
