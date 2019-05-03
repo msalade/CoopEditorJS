@@ -1,7 +1,6 @@
 import * as actionTypes from '../Actions/actionTypes';
 
 const defaultState = () => ({
-    example: 'example',
     languageType: 'javascript',
     fontSize: 14,
     roomId: undefined,
@@ -10,7 +9,7 @@ const defaultState = () => ({
         id: ''
     },
     code: '',
-    JSCCode: {
+    JSHCode: {
         JsCode: '',
         CssCode: '',
         HtmlCode: ''

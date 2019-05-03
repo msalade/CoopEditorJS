@@ -49,6 +49,7 @@ export const EditorWrapper = styled.div`
 
 export const ResultWrapper = styled.div`
     padding: 15px;
+    overflow: auto;
 
     .frame {
         min-height: 500px;
