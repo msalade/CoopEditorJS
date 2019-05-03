@@ -13,5 +13,5 @@ export const sendJSHMessage = (code = { CssCode: '', HtmlCode: '', JsCode: '' })
 
 export const sendChatMessage = (message = '') => (dispatch, getState, { sendMessage }) => {
     const { editor: { languageType, user, roomId} } = getState();
-    sendMessage(CodeMessage(code, languageType, roomId, user ));
+    sendMessage(ChatMessage(message, languageType, roomId, user ));
 };

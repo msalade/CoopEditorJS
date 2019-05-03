@@ -9,7 +9,9 @@ const controllReducer = (state = defaultState(), action) => {
     switch (action.type) {
         case actionTypes.ERROR_MESSAGE_RECEIVED:
             return {
-                ...state
+                ...state,
+                errorOccured: true,
+                errorMessage: action.message.content
             }
 
         case actionTypes.CONTROLL_MESSAGE_RECEIVED:
