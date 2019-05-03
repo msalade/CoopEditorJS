@@ -22,7 +22,7 @@ class JCHEditor extends Component {
     }
 
     onEditorChange = (value, name = 'JsCode') => {
-        const { updateEditorState, JSHCode } = this.props;
+        const { updateEditorState, JSHCode, sendJSHMessage } = this.props;
 
         updateEditorState({
             JSHCode: {
@@ -30,6 +30,7 @@ class JCHEditor extends Component {
                 [name]: value
             }
         });
+        sendJSHMessage(JSHCode);
     }
 
     onHtmlChange = value => this.onEditorChange(value, 'HtmlCode');
@@ -40,100 +41,102 @@ class JCHEditor extends Component {
 
     runCode = () => {
         const { getRawHtml, JSHCode } = this.props;
-        this.setState(currentState => ({
+        this.setState({
             resultCode: getRawHtml(JSHCode)
-        }), () => new Function(JSHCode.JsCode)());
+        }, () => new Function(JSHCode.JsCode)());
     }
 
     render() {
         const { resultCode } = this.state;
         const { JSHCode: { JsCode, CssCode, HtmlCode } } = this.props;
 
-        return <MainWrapper>
-            <MenuWrapper>
-                <MenuButton className="action" onClick={this.runCode}>Run!</MenuButton>
-            </MenuWrapper>
-            <FlexWrapper>
-                <div>
-                    <Title>JavaScript</Title>
-                    <EditorWrapper>
-                        <AceEditor
-                            mode="javascript"
-                            theme="monokai"
-                            Name="JsCode"
-                            onChange={this.onJSChange}
-                            fontSize={14}
-                            width="400px"
-                            showPrintMargin={true}
-                            showGutter={true}
-                            highlightActiveLine={true}
-                            value={JsCode}
-                            setOptions={{
-                                enableBasicAutocompletion: true,
-                                enableLiveAutocompletion: true,
-                                enableSnippets: true,
-                                showLineNumbers: true,
-                                tabSize: 2,
-                            }}
-                        />
+        return (
+            <MainWrapper>
+                <MenuWrapper>
+                    <MenuButton className="action" onClick={this.runCode}>Run!</MenuButton>
+                </MenuWrapper>
+                <FlexWrapper>
+                    <div>
+                        <Title>JavaScript</Title>
+                        <EditorWrapper>
+                            <AceEditor
+                                mode="javascript"
+                                theme="monokai"
+                                Name="JsCode"
+                                onChange={this.onJSChange}
+                                fontSize={14}
+                                width="400px"
+                                showPrintMargin={true}
+                                showGutter={true}
+                                highlightActiveLine={true}
+                                value={JsCode}
+                                setOptions={{
+                                    enableBasicAutocompletion: true,
+                                    enableLiveAutocompletion: true,
+                                    enableSnippets: true,
+                                    showLineNumbers: true,
+                                    tabSize: 2,
+                                }}
+                            />
+                        </EditorWrapper>
+                    </div>
+                    <div>
+                        <Title>Css</Title>
+                        <EditorWrapper>
+                            <AceEditor
+                                mode="css"
+                                theme="monokai"
+                                name="CssCode"
+                                onChange={this.onCSSChange}
+                                fontSize={14}
+                                width="400px"
+                                showPrintMargin={true}
+                                showGutter={true}
+                                highlightActiveLine={true}
+                                value={CssCode}
+                                setOptions={{
+                                    enableBasicAutocompletion: true,
+                                    enableLiveAutocompletion: true,
+                                    enableSnippets: true,
+                                    showLineNumbers: true,
+                                    tabSize: 2,
+                                }}
+                            />
+                        </EditorWrapper>
+                    </div>
+                    <div>
+                        <Title>Html</Title>
+                        <EditorWrapper>
+                            <AceEditor
+                                mode="html"
+                                theme="monokai"
+                                name="HtmlCode"
+                                onChange={this.onHtmlChange}
+                                fontSize={14}
+                                width="400px"
+                                showPrintMargin={true}
+                                showGutter={true}
+                                highlightActiveLine={true}
+                                value={HtmlCode}
+                                setOptions={{
+                                    enableBasicAutocompletion: true,
+                                    enableLiveAutocompletion: true,
+                                    enableSnippets: true,
+                                    showLineNumbers: true,
+                                    tabSize: 2,
+                                }}
+                            />
+                        </EditorWrapper>
+                    </div>
+                </FlexWrapper>
+                <ResultWrapper>
+                    <Title>Result</Title>
+                    <EditorWrapper className="frame">
+                        <div contentEditable='false' dangerouslySetInnerHTML={{ __html: resultCode }}></div>
                     </EditorWrapper>
-                </div>
-                <div>
-                    <Title>Css</Title>
-                    <EditorWrapper>
-                        <AceEditor
-                            mode="css"
-                            theme="monokai"
-                            name="CssCode"
-                            onChange={this.onCSSChange}
-                            fontSize={14}
-                            width="400px"
-                            showPrintMargin={true}
-                            showGutter={true}
-                            highlightActiveLine={true}
-                            value={CssCode}
-                            setOptions={{
-                                enableBasicAutocompletion: true,
-                                enableLiveAutocompletion: true,
-                                enableSnippets: true,
-                                showLineNumbers: true,
-                                tabSize: 2,
-                            }}
-                        />
-                    </EditorWrapper>
-                </div>
-                <div>
-                    <Title>Html</Title>
-                    <EditorWrapper>
-                        <AceEditor
-                            mode="html"
-                            theme="monokai"
-                            name="HtmlCode"
-                            onChange={this.onHtmlChange}
-                            fontSize={14}
-                            width="400px"
-                            showPrintMargin={true}
-                            showGutter={true}
-                            highlightActiveLine={true}
-                            value={HtmlCode}
-                            setOptions={{
-                                enableBasicAutocompletion: true,
-                                enableLiveAutocompletion: true,
-                                enableSnippets: true,
-                                showLineNumbers: true,
-                                tabSize: 2,
-                            }}
-                        />
-                    </EditorWrapper>
-                </div>
-            </FlexWrapper>
-            <ResultWrapper>
-                <Title>Result</Title>
-                <EditorWrapper className="frame">
-                    <div contentEditable='false' dangerouslySetInnerHTML={{ __html: resultCode }}></div>
-                </EditorWrapper>
-            </ResultWrapper>
-        </MainWrapper>;
+                </ResultWrapper>
+            </MainWrapper>
+        );
     }
 }
 

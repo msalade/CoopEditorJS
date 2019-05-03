@@ -47,7 +47,7 @@ import 'brace/theme/monokai';
 
 class Editor extends Component {
     state = {
-        fontSizes : [
+        fontSizes: [
             { value: 14, label: '14' },
             { value: 18, label: '18' },
             { value: 20, label: '20' },
@@ -81,47 +81,52 @@ class Editor extends Component {
     onFontSizeChange = ({ value }) => this.props.updateEditorState({ fontSize: value });
 
     onEditorChange = value => {
-        this.props.updateEditorState({ code: value });
+        const { updateEditorState, sendCodeMessage } = this.props;
+
+        updateEditorState({ code: value });
+        sendCodeMessage(value);
     }
 
     render() {
         const { fontSizes, languages } = this.state;
         const { languageType, fontSize, code } = this.props;
-        
-        return <MainWrapper>
-           <MenuBar 
-                fontSizes={fontSizes}
-                languages={languages}
-                onLanguageChange={this.onLanguageChange} 
-                onFontSizeChange={this.onFontSizeChange}
-                selectedSize={fontSize}
-                selectedLanguage={languageType}
-            />
-            <FlexWrapper>
-                <EditorWrapper>
-                    <AceEditor
-                        mode={languageType}
-                        theme="monokai"
-                        Name="JsCode"
-                        onChange={this.onEditorChange}
-                        fontSize={fontSize}
-                        width="1300px"
-                        height="550px"
-                        showPrintMargin={true}
-                        showGutter={true}
-                        highlightActiveLine={true}
-                        value={code}
-                        setOptions={{
-                            enableBasicAutocompletion: true,
-                            enableLiveAutocompletion: true,
-                            enableSnippets: true,
-                            showLineNumbers: true,
-                            tabSize: 2,
-                        }}
-                    />
-                </EditorWrapper>
-            </FlexWrapper>
-        </MainWrapper>;
+
+        return (
+            <MainWrapper>
+                <MenuBar
+                    fontSizes={fontSizes}
+                    languages={languages}
+                    onLanguageChange={this.onLanguageChange}
+                    onFontSizeChange={this.onFontSizeChange}
+                    selectedSize={fontSize}
+                    selectedLanguage={languageType}
+                />
+                <FlexWrapper>
+                    <EditorWrapper>
+                        <AceEditor
+                            mode={languageType}
+                            theme="monokai"
+                            Name="JsCode"
+                            onChange={this.onEditorChange}
+                            fontSize={fontSize}
+                            width="1300px"
+                            height="550px"
+                            showPrintMargin={true}
+                            showGutter={true}
+                            highlightActiveLine={true}
+                            value={code}
+                            setOptions={{
+                                enableBasicAutocompletion: true,
+                                enableLiveAutocompletion: true,
+                                enableSnippets: true,
+                                showLineNumbers: true,
+                                tabSize: 2,
+                            }}
+                        />
+                    </EditorWrapper>
+                </FlexWrapper>
+            </MainWrapper>
+        );
     }
 }
 
@@ -132,5 +137,4 @@ export default connect(
         ...messageActions,
         ...editorActions
     }
-)
-(Editor);
+)(Editor);

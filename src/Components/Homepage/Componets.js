@@ -42,3 +42,21 @@ export const Title = styled.h3`
 export const ErrorMsg = styled.h4`
     color: ${ColorStack.red}
 `;
+
+export const ButtonWrapper = styled.div`
+    display: flex;
+    margin-top: 2rem;
+`;
+
+export const PopUpWrapper = styled.div`
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    .cancel-button {
+        background-color: ${ColorStack.red};
+    }
+`;

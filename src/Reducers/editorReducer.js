@@ -14,7 +14,8 @@ const defaultState = () => ({
         CssCode: '',
         HtmlCode: ''
     },
-    chat: []
+    chat: [],
+    roomsList: []
 });
 
 const editorReducer = (state = defaultState(), action) => {
