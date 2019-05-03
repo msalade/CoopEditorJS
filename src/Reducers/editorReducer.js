@@ -2,7 +2,8 @@ import * as actionTypes from '../Actions/actionTypes';
 
 const defaultState = () => ({
     example: 'example',
-    languageType: 'JS',
+    languageType: 'javascript',
+    fontSize: 14,
     roomId: undefined,
     user: {
         nick: '',
@@ -22,7 +23,7 @@ const editorReducer = (state = defaultState(), action) => {
         case actionTypes.UPDATE_EDITOR_STATE:
             return {
                 ...state,
-                example: action.example
+                ...action
             }
         
         case actionTypes.CODE_MESSAGE_RECEIVED: 

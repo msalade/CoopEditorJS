@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import AceEditor from 'react-ace';
-import { FlexWrapper, MainWrapper, MenuWrapper, EditorWrapper, ResultWrapper, MenuButton, Title } from './Components';
-import * as editorActions from '../../Actions/editorActions';
 
-import * as Messages from '../../Tools/messages';
+import { FlexWrapper, MainWrapper, EditorWrapper } from './Components';
+import MenuBar from './MenuBar';
+
+import * as messageActions from '../../Actions/messageActions';
+import * as editorActions from '../../Actions/editorActions';
 
 import 'brace/mode/javascript';
 import 'brace/mode/css';
@@ -17,156 +18,81 @@ import 'brace/ext/language_tools';
 import 'brace/theme/monokai';
 
 class Editor extends Component {
-    socket = null;
     state = {
-        showJsEditor: true,
-        showCssEditor: true,
-        showHtmlEditor: true,
-        code: {
-            JsCode: '',
-            CssCode: '',
-            HtmlCode: ''
-        },
-        resultCode: ''
+        fontSizes : [
+            { value: 14, label: '14' },
+            { value: 18, label: '18' },
+            { value: 20, label: '20' },
+            { value: 24, label: '24' },
+            { value: 28, label: '28' },
+            { value: 32, label: '32' },
+            { value: 40, label: '40' }
+        ],
+        languages: [
+            { value: 'javascript', label: 'JavaScript' },
+            { value: 'java', label: 'Java' },
+            { value: 'python', label: 'Python' },
+            { value: 'xml', label: 'XML' },
+            { value: 'ruby', label: 'Ruby' },
+            { value: 'sass', label: 'SASS' },
+            { value: 'markdown', label: 'Markdown' },
+            { value: 'mysql', label: 'MySQL' },
+            { value: 'json', label: 'Json' },
+            { value: 'html', label: 'HTML' },
+            { value: 'handlebars', label: 'Handlebars' },
+            { value: 'golang', label: 'GOlang' },
+            { value: 'csharp', label: 'C#' },
+            { value: 'elixir', label: 'Elixir' },
+            { value: 'typescript', label: 'TypeScript' },
+            { value: 'css', label: 'CSS' }
+        ]
     }
 
-    componentDidMount() {
-        this.socket = this.props.connectToEditor(this.onMessageRecive);
-    }
+    onLanguageChange = ({ value }) => this.props.updateEditorState({ languageType: value });
 
-    onMessageRecive = ({ data }) => {
-        if (data !== 'null') {
-            const message = JSON.parse(data);
-            console.log(message);
-            this.setState({
-                code: {
-                    CssCode: message.CssCode,
-                    HtmlCode: message.HtmlCode,
-                    JsCode: message.JsCode
-                }
-            });
-        }
-    }
+    onFontSizeChange = ({ value }) => this.props.updateEditorState({ fontSize: value });
 
-    onShowElementClick = (elementName = 'showJsEditor') => {
-        this.setState(currentState => ({
-            [elementName]: !currentState[elementName]
-        }));
-    }
-
-    onEditorChange = (value, name) => {
-        this.setState(currentState => ({
-            code: { ...currentState.code, [name]: value }
-        }), () => {
-            // this.socket.send(
-            //     JSON.stringify({
-            //         ...this.state.code, [name]: value, Type: 0
-            //     })
-            // )
-            this.socket.send(JSON.stringify(Messages.ChatMessage('msg')))
-        });
-    }
-
-    runCode = () => {
-        const { getRawHtml } = this.props;
-
-        this.setState(currentState => ({
-            resultCode: getRawHtml(currentState.code)
-        }), () => new Function(this.state.code.JsCode)());
+    onEditorChange = value => {
+        this.props.updateEditorState({ code: value });
     }
 
     render() {
-        const { code, resultCode, showJsEditor, showCssEditor, showHtmlEditor } = this.state;
-        console.log(this.props.example);
+        const { fontSizes, languages } = this.state;
+        const { languageType, fontSize, code } = this.props;
+        
         return <MainWrapper>
-            <MenuWrapper>
-                <MenuButton className="action" onClick={this.runCode}>Run!</MenuButton>
-                <div>
-                    <MenuButton active={!showJsEditor} onClick={() => this.onShowElementClick()}>JavaScript</MenuButton>
-                    <MenuButton active={!showCssEditor} onClick={() => this.onShowElementClick("showCssEditor")}>Css</MenuButton>
-                    <MenuButton active={!showHtmlEditor} onClick={() => this.onShowElementClick("showHtmlEditor")}>Html</MenuButton>
-                </div>
-            </MenuWrapper>
+           <MenuBar 
+                fontSizes={fontSizes}
+                languages={languages}
+                onLanguageChange={this.onLanguageChange} 
+                onFontSizeChange={this.onFontSizeChange}
+                selectedSize={fontSize}
+                selectedLanguage={languageType}
+            />
             <FlexWrapper>
-                {showJsEditor && <div>
-                    <Title>JavaScript</Title>
-                    <EditorWrapper>
-                        <AceEditor
-                            mode="javascript"
-                            theme="monokai"
-                            Name="JsCode"
-                            onChange={(value) => this.onEditorChange(value, "JsCode")}
-                            fontSize={14}
-                            width="400px"
-                            showPrintMargin={true}
-                            showGutter={true}
-                            highlightActiveLine={true}
-                            value={code.JsCode}
-                            setOptions={{
-                                enableBasicAutocompletion: true,
-                                enableLiveAutocompletion: true,
-                                enableSnippets: true,
-                                showLineNumbers: true,
-                                tabSize: 2,
-                            }}
-                        />
-                    </EditorWrapper>
-                </div>}
-                {showCssEditor && <div>
-                    <Title>Css</Title>
-                    <EditorWrapper>
-                        <AceEditor
-                            mode="css"
-                            theme="monokai"
-                            name="CssCode"
-                            onChange={(value) => this.onEditorChange(value, "CssCode")}
-                            fontSize={14}
-                            width="400px"
-                            showPrintMargin={true}
-                            showGutter={true}
-                            highlightActiveLine={true}
-                            value={code.CssCode}
-                            setOptions={{
-                                enableBasicAutocompletion: true,
-                                enableLiveAutocompletion: true,
-                                enableSnippets: true,
-                                showLineNumbers: true,
-                                tabSize: 2,
-                            }}
-                        />
-                    </EditorWrapper>
-                </div>}
-                {showHtmlEditor && <div>
-                    <Title>Html</Title>
-                    <EditorWrapper>
-                        <AceEditor
-                            mode="html"
-                            theme="monokai"
-                            name="HtmlCode"
-                            onChange={(value) => this.onEditorChange(value, "HtmlCode")}
-                            fontSize={14}
-                            width="400px"
-                            showPrintMargin={true}
-                            showGutter={true}
-                            highlightActiveLine={true}
-                            value={code.HtmlCode}
-                            setOptions={{
-                                enableBasicAutocompletion: true,
-                                enableLiveAutocompletion: true,
-                                enableSnippets: true,
-                                showLineNumbers: true,
-                                tabSize: 2,
-                            }}
-                        />
-                    </EditorWrapper>
-                </div>}
-            </FlexWrapper>
-            <ResultWrapper>
-                <Title>Result</Title>
-                <EditorWrapper className="frame">
-                    <div contentEditable='false' dangerouslySetInnerHTML={{ __html: resultCode }}></div>
+                <EditorWrapper>
+                    <AceEditor
+                        mode={languageType}
+                        theme="monokai"
+                        Name="JsCode"
+                        onChange={this.onEditorChange}
+                        fontSize={fontSize}
+                        width="1300px"
+                        height="550px"
+                        showPrintMargin={true}
+                        showGutter={true}
+                        highlightActiveLine={true}
+                        value={code}
+                        setOptions={{
+                            enableBasicAutocompletion: true,
+                            enableLiveAutocompletion: true,
+                            enableSnippets: true,
+                            showLineNumbers: true,
+                            tabSize: 2,
+                        }}
+                    />
                 </EditorWrapper>
-            </ResultWrapper>
+            </FlexWrapper>
         </MainWrapper>;
     }
 }
@@ -175,6 +101,7 @@ export default connect(
     state => ({
         ...state.editor
     }), {
+        ...messageActions,
         ...editorActions
     }
 )

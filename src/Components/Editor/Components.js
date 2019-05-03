@@ -8,7 +8,7 @@ export const FlexWrapper = styled.div`
 
 export const MainWrapper = styled.div`
     background: ${ColorStack.grayBackground};
-    min-height: 790px;
+    height: 100vh;
 `;
 
 export const Title = styled.h5`
@@ -21,23 +21,13 @@ export const MenuWrapper = styled.div`
     display: flex;
     justify-content: space-between;
 
-    div {
-        display: flex;
+    .css-1pcexqc-container {
+        width: 200px;
     }
-    .action {
-        background: ${ColorStack.red};
-    }
-`;
 
-export const MenuButton = styled.button`
-    margin: 2px;
-    padding: 10px;
-    border-radius: 2px;    
-    text-decoration: none;
-    display: inline-block;
-    border: none;
-    color: ${props => props.active ? ColorStack.black : ColorStack.white};
-    background: ${props => props.active ? ColorStack.white : ColorStack.activeButton};
+    .css-kj6f9i-menu {
+        z-index: 10;
+    }
 `;
 
 export const EditorWrapper = styled.div`
@@ -45,12 +35,4 @@ export const EditorWrapper = styled.div`
     border-width: 1px;
     margin-left: 10px;
     margin-right: 10px;
-`;
-
-export const ResultWrapper = styled.div`
-    padding: 15px;
-
-    .frame {
-        min-height: 500px;
-    }
 `;

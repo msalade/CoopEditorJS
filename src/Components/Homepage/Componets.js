@@ -10,7 +10,7 @@ export const MainForm = styled.div`
 
 export const MainWrapper = styled.div`
     background: ${ColorStack.grayBackground};
-    min-height: 790px;
+    height: 100vh;
 `;
 
 export const HalfSectionScroll = styled.div`
