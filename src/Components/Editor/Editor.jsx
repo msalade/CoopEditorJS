@@ -6,7 +6,10 @@ import { FlexWrapper, MainWrapper, EditorWrapper } from './Components';
 import MenuBar from './MenuBar';
 
 import * as messageActions from '../../Actions/messageActions';
+import * as controllActions from '../../Actions/controllActions';
 import * as editorActions from '../../Actions/editorActions';
+import CradleLoader from '../Loader/CradleLoader';
+import InfoLayout from '../InfoLayout/InfoLayout';
 
 import 'brace/mode/javascript';
 import 'brace/mode/css';
@@ -87,44 +90,50 @@ class Editor extends Component {
         sendCodeMessage(value);
     }
 
+    closeInfo = () => this.props.hideErrorInfo();
+
     render() {
         const { fontSizes, languages } = this.state;
-        const { languageType, fontSize, code } = this.props;
+        const { languageType, fontSize, code, isSocketConnected, errorOccured, errorMessage } = this.props;
 
         return (
             <MainWrapper>
-                <MenuBar
-                    fontSizes={fontSizes}
-                    languages={languages}
-                    onLanguageChange={this.onLanguageChange}
-                    onFontSizeChange={this.onFontSizeChange}
-                    selectedSize={fontSize}
-                    selectedLanguage={languageType}
-                />
-                <FlexWrapper>
-                    <EditorWrapper>
-                        <AceEditor
-                            mode={languageType}
-                            theme="monokai"
-                            Name="JsCode"
-                            onChange={this.onEditorChange}
-                            fontSize={fontSize}
-                            width="1300px"
-                            height="550px"
-                            showPrintMargin={true}
-                            showGutter={true}
-                            highlightActiveLine={true}
-                            value={code}
-                            setOptions={{
-                                enableBasicAutocompletion: true,
-                                enableLiveAutocompletion: true,
-                                enableSnippets: true,
-                                showLineNumbers: true,
-                                tabSize: 2,
-                            }}
-                        />
-                    </EditorWrapper>
-                </FlexWrapper>
+                <InfoLayout showInfo={errorOccured} info={errorMessage} closeInfo={this.closeInfo}>
+                    <MenuBar
+                        fontSizes={fontSizes}
+                        languages={languages}
+                        onLanguageChange={this.onLanguageChange}
+                        onFontSizeChange={this.onFontSizeChange}
+                        selectedSize={fontSize}
+                        selectedLanguage={languageType}
+                    />
+                    <FlexWrapper>
+                        <CradleLoader loading={!isSocketConnected} label="Loading editor...">
+                            <EditorWrapper>
+                                <AceEditor
+                                    mode={languageType}
+                                    theme="monokai"
+                                    Name="JsCode"
+                                    onChange={this.onEditorChange}
+                                    fontSize={fontSize}
+                                    width="1300px"
+                                    height="550px"
+                                    showPrintMargin={true}
+                                    showGutter={true}
+                                    highlightActiveLine={true}
+                                    value={code}
+                                    setOptions={{
+                                        enableBasicAutocompletion: true,
+                                        enableLiveAutocompletion: true,
+                                        enableSnippets: true,
+                                        showLineNumbers: true,
+                                        tabSize: 2,
+                                    }}
+                                />
+                            </EditorWrapper>
+                        </CradleLoader>
+                    </FlexWrapper>
+                </InfoLayout>
             </MainWrapper>
         );
     }
@@ -132,9 +141,11 @@ class Editor extends Component {
 
 export default connect(
     state => ({
-        ...state.editor
+        ...state.editor,
+        ...state.controll
     }), {
         ...messageActions,
-        ...editorActions
+        ...editorActions,
+        ...controllActions
     }
 )(Editor);

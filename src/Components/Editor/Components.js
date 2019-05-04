@@ -35,4 +35,11 @@ export const EditorWrapper = styled.div`
     border-width: 1px;
     margin-left: 10px;
     margin-right: 10px;
+
+    ${props => props.disabled && (
+        `.ace_content {
+            cursor: not-allowed;
+            pointer-events: none;
+        }`
+    )}
 `;

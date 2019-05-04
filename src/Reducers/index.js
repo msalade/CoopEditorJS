@@ -3,10 +3,12 @@ import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import editorReducer from './editorReducer';
+import controllReducer from './controllReducer';
 import { sendMessage, initSocketListner } from '../Actions/websocket';
 
 const rootReducer = combineReducers({
-    editor: editorReducer
+    editor: editorReducer,
+    controll: controllReducer
 });
 
 const extraMiddlewares = thunk.withExtraArgument({ sendMessage });

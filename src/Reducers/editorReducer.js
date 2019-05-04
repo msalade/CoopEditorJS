@@ -6,7 +6,7 @@ const defaultState = () => ({
     roomId: undefined,
     user: {
         nick: '',
-        id: ''
+        id: null
     },
     code: '',
     JSHCode: {
@@ -15,7 +15,8 @@ const defaultState = () => ({
         HtmlCode: ''
     },
     chat: [],
-    roomsList: []
+    roomsList: [],
+    isSocketConnected: false
 });
 
 const editorReducer = (state = defaultState(), action) => {
@@ -49,6 +50,12 @@ const editorReducer = (state = defaultState(), action) => {
             return {
                 ...state,
                 chat: [...state.chat, { content: action.content || '', nick: action.user.nick || Math.random().toString(36).substring(7) }]
+            }
+
+        case actionTypes.SOCKET_STATUS_CHANGED:
+            return {
+                ...state,
+                isSocketConnected: action.isSocketConnected
             }
 
         default:

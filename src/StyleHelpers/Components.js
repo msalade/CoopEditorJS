@@ -11,4 +11,9 @@ export const MenuButton = styled.button`
     color: ${props => props.active ? ColorStack.black : ColorStack.white};
     background: ${props => props.active ? ColorStack.white : ColorStack.activeButton};
     cursor: pointer;
+
+    :disabled {
+        background: ${ColorStack.disabledGray};
+        cursor: not-allowed;
+    }
 `;
