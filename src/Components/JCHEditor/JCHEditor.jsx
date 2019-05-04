@@ -9,6 +9,7 @@ import * as controllActions from '../../Actions/controllActions';
 import * as messageActions from '../../Actions/messageActions';
 import CradleLoader from '../Loader/CradleLoader';
 import InfoLayout from '../InfoLayout/InfoLayout';
+import { commandsTypes } from '../../Entities/commandsTypes';
 
 import 'brace/mode/javascript';
 import 'brace/mode/css';
@@ -24,16 +25,19 @@ class JCHEditor extends Component {
         resultCode: ''
     }
 
-    onEditorChange = (value, name = 'JsCode') => {
-        const { updateEditorState, JSHCode, sendJSHMessage } = this.props;
+    componentDidMount() {
+        this.props.sendControllMessage('JCH', commandsTypes.ChangeCodeType);
+    }
 
-        updateEditorState({
-            JSHCode: {
-                ...JSHCode,
-                [name]: value
-            }
-        });
-        sendJSHMessage(JSHCode);
+    onEditorChange = (value, name = 'JsCode') => {
+        const { updateEditorState, JSHCode, sendCodeMessage } = this.props;
+        const newCode = {
+            ...JSHCode,
+            [name]: value
+        };
+
+        updateEditorState({ JSHCode: newCode });
+        sendCodeMessage(newCode);
     }
 
     onHtmlChange = value => this.onEditorChange(value, 'HtmlCode');
@@ -53,7 +57,7 @@ class JCHEditor extends Component {
 
     render() {
         const { resultCode } = this.state;
-        const { JSHCode: { JsCode, CssCode, HtmlCode }, isSocketConnected, errorOccured, errorMessage } = this.props;
+        const { JCHCode: { JsCode, CssCode, HtmlCode }, isSocketConnected, errorOccured, errorMessage } = this.props;
 
         return (
             <MainWrapper>

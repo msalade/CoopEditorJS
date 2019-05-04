@@ -11,12 +11,7 @@ const controllReducer = (state = defaultState(), action) => {
             return {
                 ...state,
                 errorOccured: true,
-                errorMessage: action.message.content
-            }
-
-        case actionTypes.CONTROLL_MESSAGE_RECEIVED:
-            return {
-                ...state,
+                errorMessage: action.message.Content
             }
 
         case actionTypes.SOCKET_ERROR_OCCURED: 

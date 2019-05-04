@@ -1,5 +1,7 @@
 export const commandsTypes = {
     CreateRoom: 'CreateRoom',
     JoinToRoom: 'JoinToRoom',
-    ExitRoom: 'ExitRoom'
+    ExitRoom: 'ExitRoom',
+    UpdateInformation: 'UpdateInformation',
+    ChangeCodeType: 'ChangeCodeType'
 }

@@ -18,12 +18,20 @@ class Homepage extends Component {
         roomName: ''
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const { isSocketConnected, sendControllMessage } = this.props;
+
+        if (isSocketConnected && isSocketConnected !== prevProps.isSocketConnected) {
+            sendControllMessage('', commandsTypes.UpdateInformation);
+        }
+    }
+
     onJoinClick = (id, type) => {
         const { history, sendControllMessage, updateEditorState } = this.props;
-        const route = type === 'JSC' ? `/jch-editor/${id}` : `/editor/${id}`; 
+        const route = type === 'JCH' ? `/jch-editor/${id}` : `/editor/${id}`; 
 
+        updateEditorState({ roomId: id, languageType: type });
         sendControllMessage('', commandsTypes.JoinToRoom);
-        updateEditorState({ roomId: id });
         history.push(route);
     }
 
@@ -33,7 +41,7 @@ class Homepage extends Component {
 
     onInputChange = ({ target: { value, name } }) => this.setState({ [name]: value });
 
-    onUserNameChange = ({ target: { value, name } }) => this.props.updateEditorState({ user: { id: null, name: value}});
+    onUserNameChange = ({ target: { value } }) => this.props.updateEditorState({ user: { id: null, name: value}});
 
     onStandardRoomClick = () => {
         const { history, sendControllMessage } = this.props;
@@ -80,8 +88,8 @@ class Homepage extends Component {
                         </HalfSection>
                         {roomsList && roomsList.length > 0 ? (
                             <HalfSectionScroll>
-                                {roomsList.map(({ name, id, type }) => (
-                                    <Room name={name} key={id} onJoinClick={this.onJoinClick} id={id} type={type} />
+                                {roomsList.map(({ Name, Id, TypeCode }) => (
+                                    <Room name={Name} key={Id} onJoinClick={this.onJoinClick} id={Id} type={TypeCode} />
                                 ))}
                             </HalfSectionScroll>
                         ) : (

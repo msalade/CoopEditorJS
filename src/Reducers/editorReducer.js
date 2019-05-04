@@ -1,4 +1,5 @@
 import * as actionTypes from '../Actions/actionTypes';
+import { commandsTypes } from '../Entities/commandsTypes';
 
 const defaultState = () => ({
     languageType: 'javascript',
@@ -9,7 +10,7 @@ const defaultState = () => ({
         id: null
     },
     code: '',
-    JSHCode: {
+    JCHCode: {
         JsCode: '',
         CssCode: '',
         HtmlCode: ''
@@ -27,21 +28,16 @@ const editorReducer = (state = defaultState(), action) => {
                 ...action
             }
         
-        case actionTypes.CODE_MESSAGE_RECEIVED: 
-            return {
-                ...state, 
-                code: action.message.content || ''
-            }
-        
-        case actionTypes.JHS_MESSAGE_RECEIVED: {
-            const code = JSON.parse(action.message);
-
-            return {
-                ...state,
-                JSCCode: {
-                    JsCode: code.JsCode || '',
-                    CssCode: code.CssCode || '',
-                    HtmlCode: code.HtmlCode || ''
+        case actionTypes.CODE_MESSAGE_RECEIVED: {
+            if (action.message.LanguageType === 'JCH') {
+                return {
+                    ...state, 
+                    JCHCode: JSON.parse(action.message.Content)
+                }
+            } else {
+                return {
+                    ...state, 
+                    code: action.message.Content || ''
                 }
             }
         }
@@ -49,7 +45,7 @@ const editorReducer = (state = defaultState(), action) => {
         case actionTypes.CHAT_MESSAGE_RECEIVED: 
             return {
                 ...state,
-                chat: [...state.chat, { content: action.content || '', nick: action.user.nick || Math.random().toString(36).substring(7) }]
+                chat: [...state.chat, { content: action.Content || '', nick: action.User.Nick || Math.random().toString(36).substring(7) }]
             }
 
         case actionTypes.SOCKET_STATUS_CHANGED:
@@ -57,6 +53,33 @@ const editorReducer = (state = defaultState(), action) => {
                 ...state,
                 isSocketConnected: action.isSocketConnected
             }
+
+        case actionTypes.CONTROLL_MESSAGE_RECEIVED: {
+            const { message: { CommandType, Content } } = action;
+
+            switch(CommandType) {
+                case commandsTypes.UpdateInformation: {
+                    const { RoomId, Rooms } = JSON.parse(Content);
+                    return {
+                        ...state,
+                        roomsList: Rooms,
+                        roomId: RoomId
+                    }
+                }
+
+                case commandsTypes.ChangeCodeType: {
+                    return {
+                        ...state, 
+                        languageType: Content
+                    }
+                }
+
+                default: 
+                    return {
+                        ...state
+                    }
+            }
+        }
 
         default:
             return state;

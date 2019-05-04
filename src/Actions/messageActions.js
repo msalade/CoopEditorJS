@@ -1,23 +1,17 @@
-import * as actionTypes from './actionTypes';
-import { CodeMessage, JHSMessage, ChatMessage, ControllMessage } from '../Tools/messages';
+import { CodeMessage, ChatMessage, ControllMessage } from '../Tools/messages';
 import { commandsTypes } from '../Entities/commandsTypes';
 
 export const sendCodeMessage = (code = '') => (dispatch, getState, { sendMessage }) => {
     const { editor: { languageType, user, roomId } } = getState();
-    sendMessage(CodeMessage(code, languageType, roomId, user));
-};
-
-export const sendJSHMessage = (code = { CssCode: '', HtmlCode: '', JsCode: '' }) => (dispatch, getState, { sendMessage }) => {
-    const { editor: { user, roomId } } = getState();
-    sendMessage(JHSMessage(code, roomId, user));
+    sendMessage(JSON.stringify(CodeMessage(JSON.stringify(code), languageType, roomId, user)));
 };
 
 export const sendChatMessage = (message = '') => (dispatch, getState, { sendMessage }) => {
     const { editor: { user, roomId } } = getState();
-    sendMessage(ChatMessage(message, roomId, user));
+    sendMessage(JSON.stringify(ChatMessage(message), roomId, user));
 };
 
 export const sendControllMessage = (message = '', commandType = commandsTypes.CreateRoom) => (dispatch, getState, { sendMessage }) => {
     const { editor: { user, roomId } } = getState();
-    sendMessage(ControllMessage(message, commandType, roomId, user));
+    sendMessage(JSON.stringify(ControllMessage(message, commandType, roomId, user)));
 };

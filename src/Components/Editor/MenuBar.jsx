@@ -8,7 +8,7 @@ const MenuBar = props => {
 
     return (
         <MenuWrapper>
-            <Select label="Select language type" defaultValue={languages[0]} options={languages} onChange={onLanguageChange} />
+            <Select label="Select language type" value={languages.find(lang => lang.value === selectedLanguage)} options={languages} onChange={onLanguageChange} />
             <Select label="Select font size" defaultValue={fontSizes[0]} options={fontSizes} onChange={onFontSizeChange} />
         </MenuWrapper>
     )

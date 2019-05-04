@@ -14,11 +14,11 @@ export const ChatMessage = (message = '', roomId = undefined, user = user) => ({
     content: message
 });
 
-export const CodeMessage = (code = '', languageType = LanguagesTypes.JS, roomId = undefined, user = user) => ({
+export const CodeMessage = (code = '', LanguageType = LanguagesTypes.JS, roomId = undefined, user = user) => ({
     type: MessageType.Code,
     user,
     roomId,
-    languageType,
+    LanguageType,
     content: code
 });
 
@@ -28,17 +28,6 @@ export const ControllMessage = (message = '', commandType = commandsTypes.Create
     roomId,
     commandType,
     content: message
-});
-
-export const JHSMessage = ({ CssCode, HtmlCode, JsCode }, roomId = undefined, user = user) => ({
-    type: MessageType.JHS,
-    user,
-    roomId,
-    content: {
-        CssCode,
-        HtmlCode,
-        JsCode
-    }
 });
 
 export const ErrorMessage = (error = '', roomId = undefined, user = user) => ({

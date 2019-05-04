@@ -10,6 +10,7 @@ import * as controllActions from '../../Actions/controllActions';
 import * as editorActions from '../../Actions/editorActions';
 import CradleLoader from '../Loader/CradleLoader';
 import InfoLayout from '../InfoLayout/InfoLayout';
+import { commandsTypes } from '../../Entities/commandsTypes';
 
 import 'brace/mode/javascript';
 import 'brace/mode/css';
@@ -79,7 +80,12 @@ class Editor extends Component {
         ]
     }
 
-    onLanguageChange = ({ value }) => this.props.updateEditorState({ languageType: value });
+    onLanguageChange = ({ value }) => {
+        const { updateEditorState, sendControllMessage } = this.props;
+
+        updateEditorState({ languageType: value }); 
+        sendControllMessage(value, commandsTypes.ChangeCodeType);
+    }
 
     onFontSizeChange = ({ value }) => this.props.updateEditorState({ fontSize: value });
 

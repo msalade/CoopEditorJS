@@ -10,7 +10,7 @@ export const initSocketListner = store => {
 
   socket.onmessage = ({ data }) => {
     const message = JSON.parse(data);
-    !!message.type && store.dispatch({ type: `${message.type.toUpperCase()}_MESSAGE_RECEIVED`, message: data });
+    !!message.Type && store.dispatch({ type: `${message.Type.toUpperCase()}_MESSAGE_RECEIVED`, message: message });
   }
 
   socket.onclose = ({ code }) => {
