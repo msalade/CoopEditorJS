@@ -11,6 +11,7 @@ import * as editorActions from '../../Actions/editorActions';
 import CradleLoader from '../Loader/CradleLoader';
 import InfoLayout from '../InfoLayout/InfoLayout';
 import { commandsTypes } from '../../Entities/commandsTypes';
+import Chat from '../Chat/Chat';
 
 import 'brace/mode/javascript';
 import 'brace/mode/css';
@@ -140,6 +141,7 @@ class Editor extends Component {
                         </CradleLoader>
                     </FlexWrapper>
                 </InfoLayout>
+                <Chat />
             </MainWrapper>
         );
     }

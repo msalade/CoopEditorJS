@@ -10,6 +10,7 @@ import * as messageActions from '../../Actions/messageActions';
 import CradleLoader from '../Loader/CradleLoader';
 import InfoLayout from '../InfoLayout/InfoLayout';
 import { commandsTypes } from '../../Entities/commandsTypes';
+import Chat from '../Chat/Chat';
 
 import 'brace/mode/javascript';
 import 'brace/mode/css';
@@ -150,6 +151,7 @@ class JCHEditor extends Component {
                         </ResultWrapper>
                 )}
                </InfoLayout>
+               <Chat />
             </MainWrapper>
         );
     }
