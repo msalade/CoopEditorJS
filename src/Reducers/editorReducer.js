@@ -45,7 +45,7 @@ const editorReducer = (state = defaultState(), action) => {
         case actionTypes.CHAT_MESSAGE_RECEIVED: 
             return {
                 ...state,
-                chat: [...state.chat, { content: action.Content || '', nick: action.User.Nick || Math.random().toString(36).substring(7) }]
+                chat: [...state.chat, action.message.Content]
             }
 
         case actionTypes.SOCKET_STATUS_CHANGED:
@@ -59,11 +59,15 @@ const editorReducer = (state = defaultState(), action) => {
 
             switch(CommandType) {
                 case commandsTypes.UpdateInformation: {
-                    const { RoomId, Rooms } = JSON.parse(Content);
+                    const { RoomId, Rooms, UserId } = JSON.parse(Content);
                     return {
                         ...state,
                         roomsList: Rooms,
-                        roomId: RoomId
+                        roomId: RoomId,
+                        user: {
+                            ...state.user,
+                            id: UserId
+                        }
                     }
                 }
 

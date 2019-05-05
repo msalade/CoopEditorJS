@@ -14,13 +14,16 @@ class Chat extends Component {
 
     onBarClick = () => this.setState(currentState => ({ expand: !currentState.expand }));
 
-    onSendClick = () => this.props.sendChatMessage(this.state.message);
+    onSendClick = () => {
+        this.props.sendChatMessage(this.state.message);
+        this.setState({ message: '' });
+    }
 
     onInputChange = ({ target: { value, name }}) => this.setState({ [name]: value });
 
     render() {
         const { expand, message } = this.state;
-        const { roomsList, user: { id } } = this.props;
+        const { chat, user: { id } } = this.props;
  
         return (
             <ChatWrapper>
@@ -28,10 +31,10 @@ class Chat extends Component {
                     <>
                         <Bar onClick={this.onBarClick}>Chat</Bar>
                         <ChatContent>
-                            {(roomsList || []).map(({ UserId, Content, UserName, CreationDate }) => (
+                            {(chat || []).map(({ UserId, Content, UserName, CreationDate }) => (
                                 <Message my={id === UserId}>
-                                    <label>{`${UserName} - ${CreationDate}`}</label>
-                                    <h6>{Content}</h6>
+                                    {/* <h6>{`${UserName} - ${CreationDate}`}</h6> */}
+                                    <label>{Content}</label>
                                 </Message>
                             ))}
                         </ChatContent>

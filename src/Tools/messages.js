@@ -11,7 +11,11 @@ export const ChatMessage = (message = '', roomId = undefined, user = user) => ({
     type: MessageType.Chat,
     user,
     roomId,
-    content: message
+    content: {
+        Content: message,
+        UserName: user.nick,
+        UserId: user.id
+    }
 });
 
 export const CodeMessage = (code = '', LanguageType = LanguagesTypes.JS, roomId = undefined, user = user) => ({

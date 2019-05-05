@@ -3,12 +3,13 @@ import { commandsTypes } from '../Entities/commandsTypes';
 
 export const sendCodeMessage = (code = '') => (dispatch, getState, { sendMessage }) => {
     const { editor: { languageType, user, roomId } } = getState();
-    sendMessage(JSON.stringify(CodeMessage(JSON.stringify(code), languageType, roomId, user)));
+    const codeToSend = languageType === 'JCH' ? JSON.stringify(code) : code;
+    sendMessage(JSON.stringify(CodeMessage(codeToSend, languageType, roomId, user)));
 };
 
 export const sendChatMessage = (message = '') => (dispatch, getState, { sendMessage }) => {
     const { editor: { user, roomId } } = getState();
-    sendMessage(JSON.stringify(ChatMessage(message), roomId, user));
+    sendMessage(JSON.stringify(ChatMessage(message, roomId, user)));
 };
 
 export const sendControllMessage = (message = '', commandType = commandsTypes.CreateRoom) => (dispatch, getState, { sendMessage }) => {

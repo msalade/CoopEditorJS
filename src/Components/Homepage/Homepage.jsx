@@ -41,8 +41,6 @@ class Homepage extends Component {
 
     onInputChange = ({ target: { value, name } }) => this.setState({ [name]: value });
 
-    onUserNameChange = ({ target: { value } }) => this.props.updateEditorState({ user: { id: null, name: value}});
-
     onStandardRoomClick = () => {
         const { history, sendControllMessage } = this.props;
         
@@ -60,7 +58,7 @@ class Homepage extends Component {
     closeInfo = () => this.props.hideErrorInfo();
 
     render() {
-        const { roomsList, user: { name }, isSocketConnected, errorOccured, errorMessage } = this.props;
+        const { roomsList, isSocketConnected, errorOccured, errorMessage } = this.props;
         const { roomName } = this.state;
 
         return (
@@ -73,9 +71,8 @@ class Homepage extends Component {
                                 {cancel => (
                                     <PopUpWrapper>
                                         <div>
-                                            <h3>Enter room and user name:</h3>
+                                            <h3>Enter room name:</h3>
                                             <input placeholder="Room name" name="roomName" onChange={this.onInputChange} value={roomName} />
-                                            <input placeholder="User name" name="userName" onChange={this.onUserNameChange} value={name} />
                                         </div>
                                         <ButtonWrapper>
                                             <MenuButton onClick={this.onStandardRoomClick}>Standard room</MenuButton>

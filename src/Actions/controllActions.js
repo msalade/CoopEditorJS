@@ -5,3 +5,9 @@ export const hideErrorInfo = state => (dispatch, getState, sendMessage) => {
         type: actionTypes.HIDE_ERROR_INFO
     });
 };
+
+export const showError = error => (dispatch, getState, sendMessage) => {
+    dispatch({
+        type: actionTypes.SOCKET_ERROR_OCCURED, errorMessage: error
+    });
+};

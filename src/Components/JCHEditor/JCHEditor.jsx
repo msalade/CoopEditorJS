@@ -48,10 +48,16 @@ class JCHEditor extends Component {
     onCSSChange = value => this.onEditorChange(value, 'CssCode');
 
     runCode = () => {
-        const { getRawHtml, JSHCode } = this.props;
+        const { getRawHtml, JSHCode, showError } = this.props;
         this.setState({
             resultCode: getRawHtml(JSHCode)
-        }, () => new Function(JSHCode.JsCode)());
+        }, () => {
+            try {
+                new Function(JSHCode.JsCode)()
+            } catch (ex) {
+                showError(ex.message);
+            }
+        });
     }
 
     closeInfo = () => this.props.hideErrorInfo();
@@ -151,7 +157,7 @@ class JCHEditor extends Component {
                         </ResultWrapper>
                 )}
                </InfoLayout>
-               <Chat />
+               {isSocketConnected && <Chat />}
             </MainWrapper>
         );
     }

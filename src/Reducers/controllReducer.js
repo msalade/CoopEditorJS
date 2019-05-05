@@ -24,7 +24,8 @@ const controllReducer = (state = defaultState(), action) => {
         case actionTypes.HIDE_ERROR_INFO:
             return {
                 ...state,
-                errorOccured: false
+                errorOccured: false,
+                errorMessage: ''
             }
 
         default:

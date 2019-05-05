@@ -141,7 +141,7 @@ class Editor extends Component {
                         </CradleLoader>
                     </FlexWrapper>
                 </InfoLayout>
-                <Chat />
+                {isSocketConnected && <Chat />}
             </MainWrapper>
         );
     }
