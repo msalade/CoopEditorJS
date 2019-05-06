@@ -7,7 +7,7 @@ const defaultState = () => ({
     roomId: undefined,
     user: {
         nick: '',
-        id: null
+        id: localStorage.getItem('userId') || null
     },
     code: '',
     JCHCode: {
@@ -60,6 +60,8 @@ const editorReducer = (state = defaultState(), action) => {
             switch(CommandType) {
                 case commandsTypes.UpdateInformation: {
                     const { RoomId, Rooms, UserId } = JSON.parse(Content);
+                    localStorage.setItem('userId', UserId);
+
                     return {
                         ...state,
                         roomsList: Rooms,
