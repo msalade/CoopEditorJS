@@ -78,7 +78,18 @@ class Editor extends Component {
             { value: 'elixir', label: 'Elixir' },
             { value: 'typescript', label: 'TypeScript' },
             { value: 'css', label: 'CSS' }
-        ]
+        ],
+        connectedToRoom: false
+    }
+
+    componentDidUpdate() {
+        const { roomId, history, match: { params: { id } }, updateEditorState, sendControllMessage } = this.props;
+
+        !!roomId && !id && history.replace(`/editor/${roomId}`);
+        !!id && !roomId && updateEditorState({ roomId: id });
+        !!roomId && !this.state.connectedToRoom && this.setState({ connectedToRoom: true }, () => {
+            sendControllMessage('', commandsTypes.JoinToRoom);
+        });
     }
 
     onLanguageChange = ({ value }) => {

@@ -7,6 +7,7 @@ export const Bar = styled.div`
     padding: 5px;
     text-align: left;
     border-radius: 10px 10px 0 0;
+    color: ${ColorStack.white};
 `;
 
 export const ChatWrapper = styled.div`
@@ -44,4 +45,8 @@ export const Message = styled.div`
     max-width: 200px;
     word-break: break-word;
     align-self: ${props => props.my ? 'flex-end' : 'flex-start'};
+
+    label {
+        color: ${ColorStack.white};
+    }
 `;

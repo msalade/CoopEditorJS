@@ -23,12 +23,21 @@ import 'brace/theme/monokai';
 
 class JCHEditor extends Component {
     state = {
-        resultCode: ''
+        resultCode: '',
+        connectedToRoom: false
     }
 
-    componentDidMount() {
-        this.props.sendControllMessage('JCH', commandsTypes.ChangeCodeType);
+    componentDidUpdate() {
+        const { roomId, history, match: { params: { id } }, updateEditorState, sendControllMessage } = this.props;
+
+        !!roomId && !id && history.replace(`/jch-editor/${roomId}`);
+        !!id && !roomId && updateEditorState({ roomId: id });
+        !!roomId && !this.state.connectedToRoom && this.setState({ connectedToRoom: true }, () => {
+            sendControllMessage('', commandsTypes.JoinToRoom);
+        });
     }
+
+    componentDidMount = () => this.props.sendControllMessage('JCH', commandsTypes.ChangeCodeType);
 
     onEditorChange = (value, name = 'JsCode') => {
         const { updateEditorState, JSHCode, sendCodeMessage } = this.props;

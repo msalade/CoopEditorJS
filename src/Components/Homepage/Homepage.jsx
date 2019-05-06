@@ -31,7 +31,6 @@ class Homepage extends Component {
         const route = type === 'JCH' ? `/jch-editor/${id}` : `/editor/${id}`; 
 
         updateEditorState({ roomId: id, languageType: type });
-        sendControllMessage('', commandsTypes.JoinToRoom);
         history.push(route);
     }
 
