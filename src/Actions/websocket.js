@@ -3,7 +3,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import { SOCKET_ERROR_OCCURED, SOCKET_STATUS_CHANGED, HIDE_ERROR_INFO } from './actionTypes';
 import { getErrorDescription } from '../Tools/error';
 
-const socket = new ReconnectingWebSocket('ws://localhost:5000/editor');
+const socket = new ReconnectingWebSocket('ws://localhost:5000/editor', '', {minReconnectionDelay: 1});
 
 export const initSocketListner = store => {
   socket.onopen = () => {
