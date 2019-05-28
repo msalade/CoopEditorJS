@@ -95,7 +95,7 @@ class Editor extends Component {
     onLanguageChange = ({ value }) => {
         const { updateEditorState, sendControllMessage } = this.props;
 
-        updateEditorState({ languageType: value }); 
+        updateEditorState({ languageType: value });
         sendControllMessage(value, commandsTypes.ChangeCodeType);
     }
 
@@ -109,6 +109,20 @@ class Editor extends Component {
     }
 
     closeInfo = () => this.props.hideErrorInfo();
+
+    onUploadClick = event => {
+        const { updateEditorState, sendCodeMessage } = this.props;
+        var file = event.target.files[0];
+        var reader = new FileReader();
+        reader.onload = data => {
+            const code = data.target.result;
+
+            updateEditorState({ code });
+            sendCodeMessage(code);
+        }
+        
+        reader.readAsText(file);
+    }
 
     render() {
         const { fontSizes, languages } = this.state;
@@ -126,6 +140,8 @@ class Editor extends Component {
                         selectedLanguage={languageType}
                         languageType={languageType}
                         editorContent={code}
+                        onUploadClick={this.onUploadClick}
+                        isSocketConnected={isSocketConnected}
                     />
                     <FlexWrapper>
                         <CradleLoader loading={!isSocketConnected} label="Loading editor...">

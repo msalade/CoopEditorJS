@@ -27,7 +27,7 @@ class Homepage extends Component {
     }
 
     onJoinClick = (id, type) => {
-        const { history, sendControllMessage, updateEditorState } = this.props;
+        const { history, updateEditorState } = this.props;
         const route = type === 'JCH' ? `/jch-editor/${id}` : `/editor/${id}`; 
 
         updateEditorState({ roomId: id, languageType: type });
