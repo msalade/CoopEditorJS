@@ -36,19 +36,20 @@ class JCHEditor extends Component {
         !!id && !roomId && updateEditorState({ roomId: id, languageType: 'JCH' });
         !!roomId && !this.state.connectedToRoom && this.setState({ connectedToRoom: true }, () => {
             sendControllMessage('', commandsTypes.JoinToRoom);
+            sendControllMessage('JCH', commandsTypes.ChangeCodeType);
         });
     }
 
     componentDidMount = () => this.props.sendControllMessage('JCH', commandsTypes.ChangeCodeType);
 
     onEditorChange = (value, name = 'JsCode') => {
-        const { updateEditorState, JSHCode, sendCodeMessage } = this.props;
+        const { updateEditorState, JCHCode, sendCodeMessage } = this.props;
         const newCode = {
-            ...JSHCode,
+            ...JCHCode,
             [name]: value
         };
         
-        updateEditorState({ JSHCode: newCode });
+        updateEditorState({ JCHCode: newCode });
         sendCodeMessage(newCode);
     }
 
@@ -59,12 +60,12 @@ class JCHEditor extends Component {
     onCSSChange = value => this.onEditorChange(value, 'CssCode');
 
     runCode = () => {
-        const { getRawHtml, JSHCode, showError } = this.props;
-        JSHCode && this.setState({
-            resultCode: getRawHtml(JSHCode)
+        const { getRawHtml, JCHCode, showError } = this.props;
+        JCHCode && this.setState({
+            resultCode: getRawHtml(JCHCode)
         }, () => {
             try {
-                JSHCode.JsCode && new Function(JSHCode.JsCode)();
+                JCHCode.JsCode && new Function(JCHCode.JsCode)();
                 this.resultRef.scrollIntoView({ behavior: "smooth" });
             } catch (ex) {
                 showError(ex.message);
@@ -78,14 +79,14 @@ class JCHEditor extends Component {
 
     render() {
         const { resultCode } = this.state;
-        const { JCHCode: { JsCode, CssCode, HtmlCode }, isSocketConnected, errorOccured, errorMessage, getHtmlToSave, JSHCode } = this.props;
+        const { JCHCode: { JsCode, CssCode, HtmlCode }, isSocketConnected, errorOccured, errorMessage, getHtmlToSave } = this.props;
 
         return (
             <MainWrapper>
                 <InfoLayout showInfo={errorOccured} info={errorMessage} closeInfo={this.closeInfo}>
                     <MenuWrapper>
                         <MenuButton className="action" onClick={this.runCode}>Run!</MenuButton>
-                        <FileDownloader data={getHtmlToSave(JSHCode)} codeType="html" />
+                        <FileDownloader data={getHtmlToSave({ JsCode, CssCode, HtmlCode })} codeType="html" />
                     </MenuWrapper>
                     <FlexWrapper>
                         <CradleLoader loading={!isSocketConnected} label="Loading editors...">
