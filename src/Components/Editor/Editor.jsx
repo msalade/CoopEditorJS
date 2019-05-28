@@ -124,6 +124,8 @@ class Editor extends Component {
                         onFontSizeChange={this.onFontSizeChange}
                         selectedSize={fontSize}
                         selectedLanguage={languageType}
+                        languageType={languageType}
+                        editorContent={code}
                     />
                     <FlexWrapper>
                         <CradleLoader loading={!isSocketConnected} label="Loading editor...">

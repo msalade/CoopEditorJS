@@ -27,7 +27,7 @@ export const CodeMessage = (code = '', LanguageType = LanguagesTypes.JS, roomId 
 });
 
 export const ControllMessage = (message = '', commandType = commandsTypes.CreateRoom, roomId = undefined, user = user) => ({
-    type: MessageType.Controll,
+    type: MessageType.Control,
     user,
     roomId,
     commandType,

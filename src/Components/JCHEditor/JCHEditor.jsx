@@ -11,6 +11,7 @@ import CradleLoader from '../Loader/CradleLoader';
 import InfoLayout from '../InfoLayout/InfoLayout';
 import { commandsTypes } from '../../Entities/commandsTypes';
 import Chat from '../Chat/Chat';
+import FileDownloader from '../FileDownloader/FileDownloader';
 
 import 'brace/mode/javascript';
 import 'brace/mode/css';
@@ -22,6 +23,7 @@ import 'brace/ext/language_tools';
 import 'brace/theme/monokai';
 
 class JCHEditor extends Component {
+    resultRef = null;
     state = {
         resultCode: '',
         connectedToRoom: false
@@ -31,22 +33,23 @@ class JCHEditor extends Component {
         const { roomId, history, match: { params: { id } }, updateEditorState, sendControllMessage } = this.props;
 
         !!roomId && !id && history.replace(`/jch-editor/${roomId}`);
-        !!id && !roomId && updateEditorState({ roomId: id });
+        !!id && !roomId && updateEditorState({ roomId: id, languageType: 'JCH' });
         !!roomId && !this.state.connectedToRoom && this.setState({ connectedToRoom: true }, () => {
             sendControllMessage('', commandsTypes.JoinToRoom);
+            sendControllMessage('JCH', commandsTypes.ChangeCodeType);
         });
     }
 
     componentDidMount = () => this.props.sendControllMessage('JCH', commandsTypes.ChangeCodeType);
 
     onEditorChange = (value, name = 'JsCode') => {
-        const { updateEditorState, JSHCode, sendCodeMessage } = this.props;
+        const { updateEditorState, JCHCode, sendCodeMessage } = this.props;
         const newCode = {
-            ...JSHCode,
+            ...JCHCode,
             [name]: value
         };
-
-        updateEditorState({ JSHCode: newCode });
+        
+        updateEditorState({ JCHCode: newCode });
         sendCodeMessage(newCode);
     }
 
@@ -57,12 +60,13 @@ class JCHEditor extends Component {
     onCSSChange = value => this.onEditorChange(value, 'CssCode');
 
     runCode = () => {
-        const { getRawHtml, JSHCode, showError } = this.props;
-        this.setState({
-            resultCode: getRawHtml(JSHCode)
+        const { getRawHtml, JCHCode, showError } = this.props;
+        JCHCode && this.setState({
+            resultCode: getRawHtml(JCHCode)
         }, () => {
             try {
-                new Function(JSHCode.JsCode)()
+                JCHCode.JsCode && new Function(JCHCode.JsCode)();
+                this.resultRef.scrollIntoView({ behavior: "smooth" });
             } catch (ex) {
                 showError(ex.message);
             }
@@ -71,15 +75,18 @@ class JCHEditor extends Component {
 
     closeInfo = () => this.props.hideErrorInfo();
 
+    addResultRef = ref => this.resultRef = ref;
+
     render() {
         const { resultCode } = this.state;
-        const { JCHCode: { JsCode, CssCode, HtmlCode }, isSocketConnected, errorOccured, errorMessage } = this.props;
+        const { JCHCode: { JsCode, CssCode, HtmlCode }, isSocketConnected, errorOccured, errorMessage, getHtmlToSave } = this.props;
 
         return (
             <MainWrapper>
                 <InfoLayout showInfo={errorOccured} info={errorMessage} closeInfo={this.closeInfo}>
                     <MenuWrapper>
                         <MenuButton className="action" onClick={this.runCode}>Run!</MenuButton>
+                        <FileDownloader data={getHtmlToSave({ JsCode, CssCode, HtmlCode })} codeType="html" />
                     </MenuWrapper>
                     <FlexWrapper>
                         <CradleLoader loading={!isSocketConnected} label="Loading editors...">
@@ -158,12 +165,12 @@ class JCHEditor extends Component {
                         </CradleLoader>
                     </FlexWrapper>
                 {isSocketConnected && (
-                        <ResultWrapper>
-                            <Title>Result</Title>
-                            <EditorWrapper className="frame">
-                                <div contentEditable='false' dangerouslySetInnerHTML={{ __html: resultCode }}></div>
-                            </EditorWrapper>
-                        </ResultWrapper>
+                    <ResultWrapper ref={this.addResultRef}>
+                        <Title>Result</Title>
+                        <EditorWrapper className="frame">
+                            <div contentEditable='false' dangerouslySetInnerHTML={{ __html: resultCode }}></div>
+                        </EditorWrapper>
+                    </ResultWrapper>
                 )}
                </InfoLayout>
                {isSocketConnected && <Chat />}

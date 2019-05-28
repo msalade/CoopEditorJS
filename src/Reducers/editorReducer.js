@@ -54,7 +54,7 @@ const editorReducer = (state = defaultState(), action) => {
                 isSocketConnected: action.isSocketConnected
             }
 
-        case actionTypes.CONTROLL_MESSAGE_RECEIVED: {
+        case actionTypes.CONTROL_MESSAGE_RECEIVED: {
             const { message: { CommandType, Content } } = action;
 
             switch(CommandType) {
