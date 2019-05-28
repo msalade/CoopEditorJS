@@ -7,7 +7,8 @@ const ColorStack = {
     red: '#ff0026',
     disabledGray: '#a2a892',
     ligthBlue: '#1a37ad',
-    darkBlue: '#001159'
+    darkBlue: '#001159',
+    green: '#01af1b'
 }
 
 export default ColorStack;

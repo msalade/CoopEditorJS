@@ -1,7 +1,7 @@
 export const MessageType = {
     Code: 'Code',
 	Chat: 'Chat',
-	Controll: 'Controll',
+	Control: 'Control',
 	Error: 'Error',
 	JHS: 'JHS'
 };

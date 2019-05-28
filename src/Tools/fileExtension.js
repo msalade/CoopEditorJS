@@ -1,0 +1,16 @@
+export const extensionHelper = {
+    javascript: 'js',
+    java: 'java',
+    python: 'py',
+    xml: 'xml',
+    sass: 'sass',
+    markdown: 'markdown',
+    mysql: 'mysql',
+    html: 'html',
+    handlebars: 'handlebars',
+    golang: 'go',
+    csharp: 'cs',
+    elixir: 'ex',
+    typescript: 'ts',
+    css: 'css',
+}
