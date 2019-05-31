@@ -82,11 +82,16 @@ class Editor extends Component {
         connectedToRoom: false
     }
 
-    componentDidMount = () => this.loadNewRoom();
-
+    componentDidMount = () => {
+        this.loadNewRoom(); 
+        window.onbeforeunload = () => this.exitRoom();
+    }
+    
     componentDidUpdate = () => this.loadNewRoom();
     
-    componentWillUnmount() {
+    componentWillUnmount = () => this.exitRoom();
+
+    exitRoom = () => {
         const { roomId, user: { id } } = this.props;
 
         !!roomId && !!id && this.props.sendControllMessage('', commandsTypes.ExitRoom);

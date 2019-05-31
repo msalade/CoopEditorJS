@@ -63,6 +63,8 @@ class Homepage extends Component {
 
     closeInfo = () => this.props.hideErrorInfo();
 
+    reloadData = () => this.props.sendControllMessage('', commandsTypes.UpdateInformation);
+
     render() {
         const { roomsList, isSocketConnected, errorOccured, errorMessage } = this.props;
         const { roomName } = this.state;
@@ -99,6 +101,7 @@ class Homepage extends Component {
                             <HalfSection>
                                 <CradleLoader loading={!isSocketConnected} label="Loading rooms list...">
                                     <ErrorMsg>No room found</ErrorMsg>
+                                    <MenuButton onClick={this.reloadData}>RELOAD</MenuButton>
                                 </CradleLoader>
                             </HalfSection>
                         )}
