@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import store from './Reducers';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 
 import * as serviceWorker from './serviceWorker';
 import Routes from './routes';
@@ -10,9 +10,9 @@ import Routes from './routes';
 ReactDOM.render(
     (
         <Provider store={store}>
-            <BrowserRouter>
+            <HashRouter>
                 <Routes />
-            </BrowserRouter>
+            </HashRouter>
         </Provider>
     ),
     document.getElementById('root')
