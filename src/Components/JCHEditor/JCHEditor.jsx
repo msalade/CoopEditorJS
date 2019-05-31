@@ -29,7 +29,17 @@ class JCHEditor extends Component {
         connectedToRoom: false
     }
 
-    componentDidUpdate() {
+    componentDidMount = () => this.loadNewRoom();
+
+    componentDidUpdate = () => this.loadNewRoom();
+
+    componentWillUnmount() {
+        const { roomId, user: { id } } = this.props;
+
+        !!roomId && !!id && this.props.sendControllMessage('', commandsTypes.ExitRoom);
+    }
+
+    loadNewRoom = () => {
         const { roomId, history, match: { params: { id } }, updateEditorState, sendControllMessage } = this.props;
 
         !!roomId && !id && history.replace(`/jch-editor/${roomId}`);
@@ -39,8 +49,6 @@ class JCHEditor extends Component {
             sendControllMessage('JCH', commandsTypes.ChangeCodeType);
         });
     }
-
-    componentDidMount = () => this.props.sendControllMessage('JCH', commandsTypes.ChangeCodeType);
 
     onEditorChange = (value, name = 'JsCode') => {
         const { updateEditorState, JCHCode, sendCodeMessage } = this.props;
@@ -79,14 +87,15 @@ class JCHEditor extends Component {
 
     render() {
         const { resultCode } = this.state;
-        const { JCHCode: { JsCode, CssCode, HtmlCode }, isSocketConnected, errorOccured, errorMessage, getHtmlToSave } = this.props;
+        const { JCHCode, isSocketConnected, errorOccured, errorMessage, getHtmlToSave } = this.props;
+        const { JsCode, CssCode, HtmlCode } = JCHCode;
 
         return (
             <MainWrapper>
                 <InfoLayout showInfo={errorOccured} info={errorMessage} closeInfo={this.closeInfo}>
                     <MenuWrapper>
                         <MenuButton className="action" onClick={this.runCode}>Run!</MenuButton>
-                        <FileDownloader data={getHtmlToSave({ JsCode, CssCode, HtmlCode })} codeType="html" />
+                        {JCHCode && <FileDownloader data={getHtmlToSave({ JsCode, CssCode, HtmlCode })} codeType="html" />}
                     </MenuWrapper>
                     <FlexWrapper>
                         <CradleLoader loading={!isSocketConnected} label="Loading editors...">
