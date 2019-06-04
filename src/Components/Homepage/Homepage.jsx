@@ -15,14 +15,21 @@ import { commandsTypes } from '../../Entities/commandsTypes';
 
 class Homepage extends Component {
     state = {
-        roomName: ''
+        roomName: '',
+        newContentLoaded: false
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidMount = () => this.updateInformation();
+
+    componentDidUpdate = () => this.updateInformation();
+
+    updateInformation = () => {
         const { isSocketConnected, sendControllMessage } = this.props;
 
-        if (isSocketConnected && isSocketConnected !== prevProps.isSocketConnected) {
-            sendControllMessage('', commandsTypes.UpdateInformation);
+        if (!this.state.newContentLoaded && isSocketConnected) {
+            this.setState({ newContentLoaded: true }, () => {
+                sendControllMessage('', commandsTypes.UpdateInformation);
+            });
         }
     }
 
@@ -47,7 +54,7 @@ class Homepage extends Component {
         history.push(`/editor/`);
     }
 
-    onJSHRoomClick = () => {
+    onJCHRoomClick = () => {
         const { history, sendControllMessage } = this.props;
         
         sendControllMessage(this.state.roomName, commandsTypes.CreateRoom);
@@ -55,6 +62,8 @@ class Homepage extends Component {
     }
 
     closeInfo = () => this.props.hideErrorInfo();
+
+    reloadData = () => this.props.sendControllMessage('', commandsTypes.UpdateInformation);
 
     render() {
         const { roomsList, isSocketConnected, errorOccured, errorMessage } = this.props;
@@ -75,7 +84,7 @@ class Homepage extends Component {
                                         </div>
                                         <ButtonWrapper>
                                             <MenuButton onClick={this.onStandardRoomClick}>Standard room</MenuButton>
-                                            <MenuButton onClick={this.onJSHRoomClick}>JS + CSS + HTML room</MenuButton>
+                                            <MenuButton onClick={this.onJCHRoomClick}>JS + CSS + HTML room</MenuButton>
                                             <MenuButton className="cancel-button" onClick={() => cancel()}>Cancel</MenuButton>
                                         </ButtonWrapper>
                                     </PopUpWrapper>
@@ -92,6 +101,7 @@ class Homepage extends Component {
                             <HalfSection>
                                 <CradleLoader loading={!isSocketConnected} label="Loading rooms list...">
                                     <ErrorMsg>No room found</ErrorMsg>
+                                    <MenuButton onClick={this.reloadData}>RELOAD</MenuButton>
                                 </CradleLoader>
                             </HalfSection>
                         )}

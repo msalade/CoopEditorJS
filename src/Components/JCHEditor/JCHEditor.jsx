@@ -12,6 +12,7 @@ import InfoLayout from '../InfoLayout/InfoLayout';
 import { commandsTypes } from '../../Entities/commandsTypes';
 import Chat from '../Chat/Chat';
 import FileDownloader from '../FileDownloader/FileDownloader';
+import PopUpButton from '../PopUpButton/PopUpButton';
 
 import 'brace/mode/javascript';
 import 'brace/mode/css';
@@ -29,7 +30,29 @@ class JCHEditor extends Component {
         connectedToRoom: false
     }
 
-    componentDidUpdate() {
+    componentDidMount = () => {
+        this.loadNewRoom(); 
+        window.onbeforeunload = () => this.exitRoom();
+    }
+
+    componentDidUpdate = () => {
+        this.loadNewRoom();
+        
+        if (this.props.roomDeleted) {
+            this.props.updateEditorState({ roomDeleted: false });
+            this.props.history.push('/');
+        }
+    }
+
+    componentWillUnmount = () => this.exitRoom();
+
+    exitRoom = () => {
+        const { roomId, user: { id } } = this.props;
+
+        !!roomId && !!id && this.props.sendControllMessage('', commandsTypes.ExitRoom);
+    }
+
+    loadNewRoom = () => {
         const { roomId, history, match: { params: { id } }, updateEditorState, sendControllMessage } = this.props;
 
         !!roomId && !id && history.replace(`/jch-editor/${roomId}`);
@@ -39,8 +62,6 @@ class JCHEditor extends Component {
             sendControllMessage('JCH', commandsTypes.ChangeCodeType);
         });
     }
-
-    componentDidMount = () => this.props.sendControllMessage('JCH', commandsTypes.ChangeCodeType);
 
     onEditorChange = (value, name = 'JsCode') => {
         const { updateEditorState, JCHCode, sendCodeMessage } = this.props;
@@ -77,16 +98,20 @@ class JCHEditor extends Component {
 
     addResultRef = ref => this.resultRef = ref;
 
+    deleteRoom = () => this.props.sendControllMessage('', commandsTypes.DeleteRoom);
+
     render() {
         const { resultCode } = this.state;
-        const { JCHCode: { JsCode, CssCode, HtmlCode }, isSocketConnected, errorOccured, errorMessage, getHtmlToSave } = this.props;
+        const { JCHCode, isSocketConnected, errorOccured, errorMessage, getHtmlToSave } = this.props;
+        const dataToDownload = !!JCHCode ? getHtmlToSave(JCHCode) : '';
 
         return (
             <MainWrapper>
                 <InfoLayout showInfo={errorOccured} info={errorMessage} closeInfo={this.closeInfo}>
                     <MenuWrapper>
                         <MenuButton className="action" onClick={this.runCode}>Run!</MenuButton>
-                        <FileDownloader data={getHtmlToSave({ JsCode, CssCode, HtmlCode })} codeType="html" />
+                        <PopUpButton onDeleteRoomClick={this.deleteRoom} isSocketConnected={isSocketConnected} />
+                        <FileDownloader data={dataToDownload} codeType="html" />
                     </MenuWrapper>
                     <FlexWrapper>
                         <CradleLoader loading={!isSocketConnected} label="Loading editors...">
@@ -103,7 +128,7 @@ class JCHEditor extends Component {
                                         showPrintMargin={true}
                                         showGutter={true}
                                         highlightActiveLine={true}
-                                        value={JsCode}
+                                        value={!!JCHCode ? JCHCode.JsCode : ''}
                                         setOptions={{
                                             enableBasicAutocompletion: true,
                                             enableLiveAutocompletion: true,
@@ -127,7 +152,7 @@ class JCHEditor extends Component {
                                         showPrintMargin={true}
                                         showGutter={true}
                                         highlightActiveLine={true}
-                                        value={CssCode}
+                                        value={!!JCHCode ? JCHCode.CssCode : ''}
                                         setOptions={{
                                             enableBasicAutocompletion: true,
                                             enableLiveAutocompletion: true,
@@ -151,7 +176,7 @@ class JCHEditor extends Component {
                                         showPrintMargin={true}
                                         showGutter={true}
                                         highlightActiveLine={true}
-                                        value={HtmlCode}
+                                        value={!!JCHCode ? JCHCode.HtmlCode : ''}
                                         setOptions={{
                                             enableBasicAutocompletion: true,
                                             enableLiveAutocompletion: true,

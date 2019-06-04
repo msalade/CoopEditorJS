@@ -82,7 +82,29 @@ class Editor extends Component {
         connectedToRoom: false
     }
 
-    componentDidUpdate() {
+    componentDidMount = () => {
+        this.loadNewRoom(); 
+        window.onbeforeunload = () => this.exitRoom();
+    }
+    
+    componentDidUpdate = () => {
+        this.loadNewRoom();
+        
+        if (this.props.roomDeleted) {
+            this.props.updateEditorState({ roomDeleted: false });
+            this.props.history.push('/');
+        }
+    }
+    
+    componentWillUnmount = () => this.exitRoom();
+
+    exitRoom = () => {
+        const { roomId, user: { id } } = this.props;
+
+        !!roomId && !!id && this.props.sendControllMessage('', commandsTypes.ExitRoom);
+    }
+
+    loadNewRoom = () => {
         const { roomId, history, match: { params: { id } }, updateEditorState, sendControllMessage } = this.props;
 
         !!roomId && !id && history.replace(`/editor/${roomId}`);
@@ -113,16 +135,21 @@ class Editor extends Component {
     onUploadClick = event => {
         const { updateEditorState, sendCodeMessage } = this.props;
         var file = event.target.files[0];
-        var reader = new FileReader();
-        reader.onload = data => {
-            const code = data.target.result;
 
-            updateEditorState({ code });
-            sendCodeMessage(code);
+        if (!!file) {
+            var reader = new FileReader();
+    
+                const code = data.target.result;
+    
+                updateEditorState({ code });
+                sendCodeMessage(code);
+            }
+            
+            reader.readAsText(file);
         }
-        
-        reader.readAsText(file);
     }
+
+    deleteRoom = () => this.props.sendControllMessage('', commandsTypes.DeleteRoom);
 
     render() {
         const { fontSizes, languages } = this.state;
@@ -142,6 +169,7 @@ class Editor extends Component {
                         editorContent={code}
                         onUploadClick={this.onUploadClick}
                         isSocketConnected={isSocketConnected}
+                        deleteRoom={this.deleteRoom}
                     />
                     <FlexWrapper>
                         <CradleLoader loading={!isSocketConnected} label="Loading editor...">

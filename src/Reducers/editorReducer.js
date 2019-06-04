@@ -17,7 +17,8 @@ const defaultState = () => ({
     },
     chat: [],
     roomsList: [],
-    isSocketConnected: false
+    isSocketConnected: false,
+    roomDeleted: false
 });
 
 const editorReducer = (state = defaultState(), action) => {
@@ -77,6 +78,20 @@ const editorReducer = (state = defaultState(), action) => {
                     return {
                         ...state, 
                         languageType: Content
+                    }
+                }
+
+                case commandsTypes.DeleteRoom : {
+                    return {
+                        ...state,
+                        roomDeleted: true,
+                        roomId: undefined,
+                        code: '',
+                        JCHCode: {
+                            JsCode: '',
+                            CssCode: '',
+                            HtmlCode: ''
+                        }
                     }
                 }
 

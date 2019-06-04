@@ -3,5 +3,6 @@ export const commandsTypes = {
     JoinToRoom: 'JoinToRoom',
     ExitRoom: 'ExitRoom',
     UpdateInformation: 'UpdateInformation',
-    ChangeCodeType: 'ChangeCodeType'
+    ChangeCodeType: 'ChangeCodeType',
+    DeleteRoom: 'DeleteRoom'
 }
