@@ -12,6 +12,7 @@ import InfoLayout from '../InfoLayout/InfoLayout';
 import { commandsTypes } from '../../Entities/commandsTypes';
 import Chat from '../Chat/Chat';
 import FileDownloader from '../FileDownloader/FileDownloader';
+import PopUpButton from '../PopUpButton/PopUpButton';
 
 import 'brace/mode/javascript';
 import 'brace/mode/css';
@@ -34,7 +35,14 @@ class JCHEditor extends Component {
         window.onbeforeunload = () => this.exitRoom();
     }
 
-    componentDidUpdate = () => this.loadNewRoom();
+    componentDidUpdate = () => {
+        this.loadNewRoom();
+        
+        if (this.props.roomDeleted) {
+            this.props.updateEditorState({ roomDeleted: false });
+            this.props.history.push('/');
+        }
+    }
 
     componentWillUnmount = () => this.exitRoom();
 
@@ -90,17 +98,20 @@ class JCHEditor extends Component {
 
     addResultRef = ref => this.resultRef = ref;
 
+    deleteRoom = () => this.props.sendControllMessage('', commandsTypes.DeleteRoom);
+
     render() {
         const { resultCode } = this.state;
         const { JCHCode, isSocketConnected, errorOccured, errorMessage, getHtmlToSave } = this.props;
-        const { JsCode, CssCode, HtmlCode } = JCHCode;
+        const dataToDownload = !!JCHCode ? getHtmlToSave(JCHCode) : '';
 
         return (
             <MainWrapper>
                 <InfoLayout showInfo={errorOccured} info={errorMessage} closeInfo={this.closeInfo}>
                     <MenuWrapper>
                         <MenuButton className="action" onClick={this.runCode}>Run!</MenuButton>
-                        {JCHCode && <FileDownloader data={getHtmlToSave({ JsCode, CssCode, HtmlCode })} codeType="html" />}
+                        <PopUpButton onDeleteRoomClick={this.deleteRoom} isSocketConnected={isSocketConnected} />
+                        <FileDownloader data={dataToDownload} codeType="html" />
                     </MenuWrapper>
                     <FlexWrapper>
                         <CradleLoader loading={!isSocketConnected} label="Loading editors...">
@@ -117,7 +128,7 @@ class JCHEditor extends Component {
                                         showPrintMargin={true}
                                         showGutter={true}
                                         highlightActiveLine={true}
-                                        value={JsCode}
+                                        value={!!JCHCode ? JCHCode.JsCode : ''}
                                         setOptions={{
                                             enableBasicAutocompletion: true,
                                             enableLiveAutocompletion: true,
@@ -141,7 +152,7 @@ class JCHEditor extends Component {
                                         showPrintMargin={true}
                                         showGutter={true}
                                         highlightActiveLine={true}
-                                        value={CssCode}
+                                        value={!!JCHCode ? JCHCode.CssCode : ''}
                                         setOptions={{
                                             enableBasicAutocompletion: true,
                                             enableLiveAutocompletion: true,
@@ -165,7 +176,7 @@ class JCHEditor extends Component {
                                         showPrintMargin={true}
                                         showGutter={true}
                                         highlightActiveLine={true}
-                                        value={HtmlCode}
+                                        value={!!JCHCode ? JCHCode.HtmlCode : ''}
                                         setOptions={{
                                             enableBasicAutocompletion: true,
                                             enableLiveAutocompletion: true,

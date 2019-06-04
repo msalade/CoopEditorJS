@@ -87,7 +87,14 @@ class Editor extends Component {
         window.onbeforeunload = () => this.exitRoom();
     }
     
-    componentDidUpdate = () => this.loadNewRoom();
+    componentDidUpdate = () => {
+        this.loadNewRoom();
+        
+        if (this.props.roomDeleted) {
+            this.props.updateEditorState({ roomDeleted: false });
+            this.props.history.push('/');
+        }
+    }
     
     componentWillUnmount = () => this.exitRoom();
 
@@ -143,6 +150,8 @@ class Editor extends Component {
         }
     }
 
+    deleteRoom = () => this.props.sendControllMessage('', commandsTypes.DeleteRoom);
+
     render() {
         const { fontSizes, languages } = this.state;
         const { languageType, fontSize, code, isSocketConnected, errorOccured, errorMessage } = this.props;
@@ -161,6 +170,7 @@ class Editor extends Component {
                         editorContent={code}
                         onUploadClick={this.onUploadClick}
                         isSocketConnected={isSocketConnected}
+                        deleteRoom={this.deleteRoom}
                     />
                     <FlexWrapper>
                         <CradleLoader loading={!isSocketConnected} label="Loading editor...">
