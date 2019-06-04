@@ -86,7 +86,12 @@ const editorReducer = (state = defaultState(), action) => {
                         ...state,
                         roomDeleted: true,
                         roomId: undefined,
-                        code: ''
+                        code: '',
+                        JCHCode: {
+                            JsCode: '',
+                            CssCode: '',
+                            HtmlCode: ''
+                        }
                     }
                 }
 
