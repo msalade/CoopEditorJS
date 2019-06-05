@@ -139,6 +139,7 @@ class Editor extends Component {
         if (!!file) {
             var reader = new FileReader();
     
+            reader.onload = data => {
                 const code = data.target.result;
     
                 updateEditorState({ code });
